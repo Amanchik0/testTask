@@ -3,7 +3,7 @@ package models
 type ProductCreateRequest struct {
 	ProductName string  `json:"name" binding:"required"`
 	Description string  `json:"description" binding:"required"`
-	Price       float64 `json:"price" binding:"required, gt=0"`
+	Price       float64 `json:"price" binding:"required,gt=0"`
 }
 
 type RegisterRequest struct {

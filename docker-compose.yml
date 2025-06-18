@@ -1,0 +1,47 @@
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: testdb
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: testdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+    - "5432:5432"
+    volumes:
+      -  postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d testdb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  app:
+    build: .
+    container_name: test-app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: "host=postgres user=postgres password=postgres dbname=testdb port=5432 sslmode=disable"
+      JWT_SECRET: "your-very-secret-jwt-key-change-this-in-production"
+      PORT: "8080"
+      GIN_MODE: "release"
+    networks:
+      - app-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
+volumes:
+  postgres_data:
+    driver: local
+networks:
+  app-network:
+    driver: bridge

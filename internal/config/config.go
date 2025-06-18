@@ -15,7 +15,9 @@ type Config struct {
 
 func Load() *Config {
 	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal("Error loading .env file")
+		log.Println("No .env file found, using environment variables and defaults")
+	} else {
+		log.Println(".env file loaded successfully")
 	}
 	config := &Config{
 		DatabaseUrl: getEnv("DATABASE_URL", "host=localhost user=postgres password=postgres dbname=testdb port=5432 sslmode=disable"),

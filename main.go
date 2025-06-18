@@ -1,21 +1,79 @@
 package main
 
 import (
-  "fmt"
+	"amiTech/internal/config"
+	"amiTech/internal/handlers"
+	"amiTech/internal/repos"
+	"amiTech/internal/services"
+	"log"
+
+	"github.com/gin-gonic/gin"
 )
 
-//TIP <p>To run your code, right-click the code and select <b>Run</b>.</p> <p>Alternatively, click
-// the <icon src="AllIcons.Actions.Execute"/> icon in the gutter and select the <b>Run</b> menu item from here.</p>
-
 func main() {
-  //TIP <p>Press <shortcut actionId="ShowIntentionActions"/> when your caret is at the underlined text
-  // to see how GoLand suggests fixing the warning.</p><p>Alternatively, if available, click the lightbulb to view possible fixes.</p>
-  s := "gopher"
-  fmt.Println("Hello and welcome, %s!", s)
+	cfg := config.Load()
 
-  for i := 1; i <= 5; i++ {
-	//TIP <p>To start your debugging session, right-click your code in the editor and select the Debug option.</p> <p>We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-	// for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.</p>
-	fmt.Println("i =", 100/i)
-  }
+	db := config.ConnectDatabase(cfg.DatabaseUrl)
+
+	config.RunMigrations(db)
+
+	// Инициализируем слои приложения
+	// Repositories
+	userRepo := repos.NewUserRepository(db)
+	productRepo := repos.NewProductRepository(db)
+
+	// Services
+	authService := services.NewAuthService(userRepo, cfg.JwtSecret)
+	productService := services.NewProductService(productRepo)
+
+	// Handlers
+	authHandler := handlers.NewAuthHandler(authService)
+	productHandler := handlers.NewProductHandler(productService)
+
+	// Создаем Gin приложение
+	router := gin.Default()
+
+	// Маршруты аутентификации
+	authRouter := router.Group("/auth")
+	{
+		authRouter.POST("/register", authHandler.Register)
+		authRouter.POST("/login", authHandler.Login)
+	}
+
+	// Защищенные маршруты для продуктов
+	apiRouter := router.Group("/api")
+	apiRouter.Use(authService.AuthMiddleware())
+	{
+		apiRouter.GET("/products", productHandler.GetProducts)
+		apiRouter.POST("/products", productHandler.CreateProduct)
+		apiRouter.GET("/products/:id", productHandler.GetProduct)
+		apiRouter.PUT("/products/:id", productHandler.UpdateProduct)
+		apiRouter.DELETE("/products/:id", productHandler.DeleteProduct)
+	}
+
+	// Корневой маршрут
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": " Test API",
+			"version": "1.0.0",
+			"endpoints": gin.H{
+				"auth": gin.H{
+					"register": "POST /auth/register",
+					"login":    "POST /auth/login",
+				},
+				"products": gin.H{
+					"list":   "GET /api/products",
+					"create": "POST /api/products",
+					"get":    "GET /api/products/:id",
+					"update": "PUT /api/products/:id",
+					"delete": "DELETE /api/products/:id",
+				},
+				"news": "GET /news",
+			},
+		})
+	})
+
+	// Запускаем сервер
+	log.Printf("Server starting on port %s", cfg.Port)
+	router.Run(":" + cfg.Port)
 }

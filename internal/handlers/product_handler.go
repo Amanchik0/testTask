@@ -9,19 +9,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ProductHandler структура для обработчиков продуктов
 type ProductHandler struct {
 	productService services.ProductService
 }
 
-// NewProductHandler создает новый экземпляр ProductHandler
 func NewProductHandler(productService services.ProductService) *ProductHandler {
 	return &ProductHandler{
 		productService: productService,
 	}
 }
 
-// GetProducts получает все продукты текущего пользователя
 func (h *ProductHandler) GetProducts(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
@@ -43,7 +40,6 @@ func (h *ProductHandler) GetProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// CreateProduct создает новый продукт
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
@@ -70,7 +66,6 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	c.JSON(http.StatusCreated, response)
 }
 
-// GetProduct получает конкретный продукт по ID
 func (h *ProductHandler) GetProduct(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
