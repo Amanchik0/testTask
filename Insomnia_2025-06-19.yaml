@@ -1,0 +1,195 @@
+type: collection.insomnia.rest/5.0
+name: "Go lesson "
+meta:
+  id: wrk_ee721fa357d447f08296b4c98941de63
+  created: 1749032216106
+  modified: 1749032216106
+  description: ""
+collection:
+  - url: localhost:8080/auth/register
+    name: reg
+    meta:
+      id: req_aae63352efe045ed9cf35d8d1bc7cd37
+      created: 1749032261381
+      modified: 1750325947400
+      isPrivate: false
+      description: ""
+      sortKey: -1749032261381
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        	{
+        		"email": "asd@gmail.com",
+        		"first_name": "aasd",
+        		"last_name": "asd",
+        		"password": "asdasd"
+        	}
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.1.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/auth/login
+    name: login
+    meta:
+      id: req_d12b399c2a3242989f372f4a4ab2c3c2
+      created: 1750325950720
+      modified: 1750325994920
+      isPrivate: false
+      description: ""
+      sortKey: -1750325950720
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        	{
+        		"email": "asd@gmail.com",
+        		"password": "asdasd"
+        	}
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.2.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/api/public/products
+    name: GetAllProducts
+    meta:
+      id: req_06c2606477494a198ff5ce537e50f154
+      created: 1750326006847
+      modified: 1750326129251
+      isPrivate: false
+      description: ""
+      sortKey: -1750326006847
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.2.0
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTA1ODUxOTYsImlhdCI6MTc1MDMyNTk5NiwidXNlcl9pZCI6MX0.ty0JeTF2gwYGDj6jlWIYoy2bkKfRJiIFFcAgowsZk-w
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/api/public/products/search
+    name: SearchProductsByName
+    meta:
+      id: req_f9abbbf5f6644302b866f63df4eee8dc
+      created: 1750326054792
+      modified: 1750326135148
+      isPrivate: false
+      description: ""
+      sortKey: -1750326054792
+    method: GET
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        "name": "фывыф"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.2.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/api/products
+    name: create
+    meta:
+      id: req_c12a17d2182f4e8db68a07874cf2cece
+      created: 1750326196769
+      modified: 1750326340334
+      isPrivate: false
+      description: ""
+      sortKey: -1750326196769
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        "name": "sadad",
+        	"description": "adsadsa)",
+        	"price": 3213
+
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.2.0
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTA1ODUxOTYsImlhdCI6MTc1MDMyNTk5NiwidXNlcl9pZCI6MX0.ty0JeTF2gwYGDj6jlWIYoy2bkKfRJiIFFcAgowsZk-w
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: localhost:8080/api/my-products
+    name: my-products
+    meta:
+      id: req_15668782613d4a8d9effffb3f690469e
+      created: 1750326292075
+      modified: 1750326332946
+      isPrivate: false
+      description: ""
+      sortKey: -1750326292075
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.2.0
+    authentication:
+      type: bearer
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTA1ODUxOTYsImlhdCI6MTc1MDMyNTk5NiwidXNlcl9pZCI6MX0.ty0JeTF2gwYGDj6jlWIYoy2bkKfRJiIFFcAgowsZk-w
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_da310bb7a5a748904cdadf0356c766d16f512a1e
+    created: 1749032216118
+    modified: 1749032216118
+environments:
+  name: Base Environment
+  meta:
+    id: env_da310bb7a5a748904cdadf0356c766d16f512a1e
+    created: 1749032216114
+    modified: 1749032216114
+    isPrivate: false

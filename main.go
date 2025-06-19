@@ -5,9 +5,10 @@ import (
 	"amiTech/internal/handlers"
 	"amiTech/internal/repos"
 	"amiTech/internal/services"
-	"log"
-
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"log"
+	"time"
 )
 
 func main() {
@@ -32,6 +33,14 @@ func main() {
 
 	// Создаем Gin приложение
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization", "Content-Length"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	// Маршруты аутентификации
 	authRouter := router.Group("/auth")
@@ -40,35 +49,37 @@ func main() {
 		authRouter.POST("/login", authHandler.Login)
 	}
 
-	// Защищенные маршруты для продуктов
+	publicRouter := router.Group("/api/public")
+	{
+		publicRouter.GET("/products", productHandler.GetAllProducts)
+		publicRouter.GET("/products/search", productHandler.SearchProductsByName)
+	}
+
 	apiRouter := router.Group("/api")
 	apiRouter.Use(authService.AuthMiddleware())
 	{
-		apiRouter.GET("/products", productHandler.GetProducts)
 		apiRouter.POST("/products", productHandler.CreateProduct)
-		apiRouter.GET("/products/:id", productHandler.GetProduct)
-		apiRouter.PUT("/products/:id", productHandler.UpdateProduct)
-		apiRouter.DELETE("/products/:id", productHandler.DeleteProduct)
+		apiRouter.GET("/my-products", productHandler.GetUserProducts)
 	}
 
 	// Корневой маршрут
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": " Test API",
+			"message": "Product API",
 			"version": "1.0.0",
 			"endpoints": gin.H{
 				"auth": gin.H{
 					"register": "POST /auth/register",
 					"login":    "POST /auth/login",
 				},
-				"products": gin.H{
-					"list":   "GET /api/products",
-					"create": "POST /api/products",
-					"get":    "GET /api/products/:id",
-					"update": "PUT /api/products/:id",
-					"delete": "DELETE /api/products/:id",
+				"public": gin.H{
+					"all_products":    "GET /api/public/products",
+					"search_products": "GET /api/public/products/search?name=<search_term>",
 				},
-				"news": "GET /news",
+				"protected": gin.H{
+					"create_product": "POST /api/products",
+					"my_products":    "GET /api/my-products",
+				},
 			},
 		})
 	})

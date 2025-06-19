@@ -16,7 +16,7 @@ import (
 type AuthService interface {
 	Register(req *models.RegisterRequest) (*models.AuthResponse, error)
 	Login(req *models.LoginRequest) (*models.AuthResponse, error)
-	GenerateToken(userID int64) (string, error)
+	GenerateToken(userID uint) (string, error)
 	AuthMiddleware() gin.HandlerFunc
 }
 type authService struct {
@@ -123,7 +123,7 @@ func (s *authService) AuthMiddleware() gin.HandlerFunc {
 	}
 }
 
-func (s *authService) GenerateToken(userID int64) (string, error) {
+func (s *authService) GenerateToken(userID uint) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userID,
 		"exp":     time.Now().Add(time.Hour * 72).Unix(),
